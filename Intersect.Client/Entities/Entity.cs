@@ -979,6 +979,14 @@ namespace Intersect.Client.Entities
                                         DrawEquipment(item.FemalePaperdoll, alpha);
                                     }
                                 }
+                                else
+                                {
+                                    // Render a hairstyle here if we're currently rendering the desired hair slot without any equipment in it.
+                                    if (this is Player && paperdoll == Options.EquipmentSlots[Options.EquipmentSlots.IndexOf(Options.Equipment.HairSlot)])
+                                    {
+                                            ((Player)this).DrawCustomSpriteLayer(CustomSpriteLayers.Hair, GameContentManager.TextureType.Hair, alpha);
+                                    }
+                                }
                             }
                         }
                     }

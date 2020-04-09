@@ -339,9 +339,11 @@ namespace Intersect.Server.Networking
             }
 
             //If a player, send equipment to all (for paperdolls)
+            //Also send Custom Sprite Layers
             if (en.GetType() == typeof(Player))
             {
                 SendPlayerEquipmentTo(player, (Player) en);
+                SendCustomSpriteLayersTo(player, (Player) en);
             }
 
             if (en.GetType() == typeof(Npc))
@@ -372,6 +374,7 @@ namespace Intersect.Server.Networking
             player.SendPacket(new MapEntitiesPacket(enPackets.ToArray()));
 
             SendMapEntityEquipmentTo(player, sendEntities); //Send the equipment of each player
+            SendMapCustomSpriteLayersTo(player, sendEntities); //Send the custom sprite layers of each player.
 
             for (var i = 0; i < sendEntities.Count; i++)
             {
@@ -392,6 +395,21 @@ namespace Intersect.Server.Networking
                     if (entities[i].GetType() == typeof(Player) && player != entities[i])
                     {
                         SendPlayerEquipmentTo(player, (Player) entities[i]);
+                    }
+                }
+            }
+        }
+
+        public static void SendMapCustomSpriteLayersTo(Player player, List<Entity> entities)
+        {
+            for (var i = 0; i < entities.Count; i++)
+            {
+                if (entities[i] != null && entities[i] != player)
+                {
+                    //If a player, send equipment to all (for paperdolls)
+                    if (entities[i].GetType() == typeof(Player) && player != entities[i])
+                    {
+                        SendCustomSpriteLayersTo(player, (Player)entities[i]);
                     }
                 }
             }
@@ -423,6 +441,7 @@ namespace Intersect.Server.Networking
             if (en.GetType() == typeof(Player))
             {
                 SendPlayerEquipmentToProximity((Player) en);
+                SendCustomSpriteLayersToProximity((Player) en);
             }
 
             if (en.GetType() == typeof(Npc))
@@ -935,6 +954,22 @@ namespace Intersect.Server.Networking
             player.SendPacket(new SpellUpdatePacket(slot, player.Spells[slot].SpellId));
         }
 
+        //CustomSpriteLayerPacket
+        public static CustomSpriteLayersPacket GenerateCustomSpriteLayersPacket(Player en)
+        {
+            return new CustomSpriteLayersPacket(en.Id, en.CustomSpriteLayers);
+        }
+
+        public static void SendCustomSpriteLayersTo(Player forPlayer, Player en)
+        {
+            forPlayer.SendPacket(GenerateCustomSpriteLayersPacket(en));
+        }
+
+        public static void SendCustomSpriteLayersToProximity(Player en)
+        {
+            SendDataToProximity(en.MapId, GenerateCustomSpriteLayersPacket(en));
+        }
+
         //EquipmentPacket
         public static EquipmentPacket GenerateEquipmentPacket(Player forPlayer, Player en)
         {
@@ -1046,7 +1081,7 @@ namespace Intersect.Server.Networking
                 characters.Add(
                     new CharacterPacket(
                         character.Id, character.Name, character.Sprite, character.Face, character.Level,
-                        ClassBase.GetName(character.ClassId), equipment
+                        ClassBase.GetName(character.ClassId), equipment, character.CustomSpriteLayers
                     )
                 );
             }

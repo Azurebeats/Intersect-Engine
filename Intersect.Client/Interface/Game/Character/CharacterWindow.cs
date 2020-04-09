@@ -197,6 +197,7 @@ namespace Intersect.Client.Interface.Game.Character
                 for (var z = 0; z < Options.PaperdollOrder[1].Count; z++)
                 {
                     var paperdoll = "";
+                    var type = GameContentManager.TextureType.Paperdoll;
                     if (Options.EquipmentSlots.IndexOf(Options.PaperdollOrder[1][z]) > -1)
                     {
                         var equipment = Globals.Me.MyEquipment;
@@ -231,6 +232,12 @@ namespace Intersect.Client.Interface.Game.Character
                         Align.Center(PaperdollPanels[z]);
                     }
 
+                    if (paperdoll == "" && Options.PaperdollOrder[1][z] == Options.Equipment.HairSlot)
+                    {
+                        paperdoll = Globals.Me.CustomSpriteLayers[(int)Enums.CustomSpriteLayers.Hair];
+                        type = GameContentManager.TextureType.Hair;
+                    }
+
                     if (string.IsNullOrWhiteSpace(paperdoll) && !string.IsNullOrWhiteSpace(PaperdollTextures[z]) && Options.PaperdollOrder[1][z] != "Player")
                     {
                         PaperdollPanels[z].Texture = null;
@@ -240,7 +247,7 @@ namespace Intersect.Client.Interface.Game.Character
                     else if (paperdoll != "" && paperdoll != PaperdollTextures[z])
                     {
                         var paperdollTex = Globals.ContentManager.GetTexture(
-                            GameContentManager.TextureType.Paperdoll, paperdoll
+                            type, paperdoll
                         );
 
                         PaperdollPanels[z].Texture = paperdollTex;
@@ -267,7 +274,7 @@ namespace Intersect.Client.Interface.Game.Character
 
                         PaperdollPanels[z].Show();
                         PaperdollTextures[z] = paperdoll;
-                    }
+                    } 
                 }
             }
             else if (Globals.Me.MySprite != mCurrentSprite && Globals.Me.Face != mCurrentSprite)
