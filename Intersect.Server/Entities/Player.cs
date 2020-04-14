@@ -583,6 +583,9 @@ namespace Intersect.Server.Entities
             {
                 ((PlayerEntityPacket) packet).Equipment =
                     PacketSender.GenerateEquipmentPacket(forPlayer, (Player) this);
+
+                pkt.CustomSpriteLayers =
+                    PacketSender.GenerateCustomSpriteLayersPacket((Player)this);
             }
 
             return pkt;

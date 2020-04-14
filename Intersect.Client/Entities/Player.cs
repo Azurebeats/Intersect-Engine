@@ -73,11 +73,6 @@ namespace Intersect.Client.Entities
                 Hotbar[i] = new HotbarInstance();
             }
 
-            for (var i = 0; i <= (int)SpriteAnimations.Weapon; i++)
-            {
-                CustomSpriteLayersAnimationTexture[(SpriteAnimations)i] = new GameTexture[(int)Enums.CustomSpriteLayers.CustomCount];
-            }
-
             mRenderPriority = 2;
         }
 
@@ -240,6 +235,17 @@ namespace Intersect.Client.Entities
                     this.Equipment = ((PlayerEntityPacket) packet).Equipment.ItemIds;
                 }
             }
+
+            for (var i = 0; i <= (int)SpriteAnimations.Weapon; i++)
+            {
+                CustomSpriteLayersAnimationTexture[(SpriteAnimations)i] = new GameTexture[(int)Enums.CustomSpriteLayers.CustomCount];
+            }
+
+            if (pkt.CustomSpriteLayers != null)
+            {
+                this.CustomSpriteLayers = pkt.CustomSpriteLayers.CustomSpriteLayers;
+            }
+
         }
 
         public override EntityTypes GetEntityType()
